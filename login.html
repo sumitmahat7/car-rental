@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarRentalPro - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .bg-login {
+            background-image: url('https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-100">
+    <div class="relative min-h-screen bg-login">
+        <div class="absolute inset-0 bg-slate-950/70"></div>
+        <div class="relative flex min-h-screen items-center justify-center px-6 py-12">
+            <div class="w-full max-w-md rounded-[2rem] bg-white/95 p-10 shadow-2xl shadow-slate-900/10 backdrop-blur-xl">
+                <div class="mb-8 text-center">
+                    <a href="index.html" class="inline-flex items-center justify-center text-3xl font-bold text-slate-900">CarRentalPro</a>
+                    <p class="mt-3 text-sm text-slate-600">Log in to manage bookings and rent your dream car quickly.</p>
+                </div>
+                <form id="login-form" class="space-y-6">
+                    <div id="alert-message" class="hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-slate-700">Email address</label>
+                        <div class="mt-2">
+                            <input id="email" name="email" type="email" required placeholder="you@example.com"
+                                class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200" />
+                        </div>
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-slate-700">Password</label>
+                        <div class="mt-2">
+                            <input id="password" name="password" type="password" required placeholder="Enter your password"
+                                class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200" />
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-sm text-slate-600">
+                        <label class="inline-flex items-center gap-2">
+                            <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+                            Remember me
+                        </label>
+                        <a href="#" class="font-medium text-indigo-600 hover:text-indigo-700">Forgot password?</a>
+                    </div>
+                    <button type="submit"
+                        class="w-full rounded-2xl bg-indigo-600 px-4 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-700">Sign In</button>
+                </form>
+                <p class="mt-6 text-center text-sm text-slate-600">
+                    New here? <a href="register.html" class="font-semibold text-indigo-600 hover:text-indigo-700">Create an account</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const alertBox = document.getElementById('alert-message');
+
+        const showAlert = message => {
+            alertBox.className = 'rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700';
+            alertBox.textContent = message;
+            alertBox.classList.remove('hidden');
+        };
+
+        const redirectIfLoggedIn = () => {
+            if (localStorage.getItem('carRentalLoggedIn') === 'true') {
+                window.location.href = 'index.html';
+            }
+        };
+
+        loginForm.addEventListener('submit', event => {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const userJson = localStorage.getItem('carRentalUser');
+
+            if (!userJson) {
+                showAlert('No account found. Please register first.');
+                return;
+            }
+
+            const user = JSON.parse(userJson);
+
+            if (email !== user.email || password !== user.password) {
+                showAlert('Invalid email or password.');
+                return;
+            }
+
+            localStorage.setItem('carRentalLoggedIn', 'true');
+            localStorage.setItem('carRentalCurrentUser', JSON.stringify(user));
+            alertBox.className = 'rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700';
+            alertBox.textContent = 'Login successful! Redirecting to site...';
+            alertBox.classList.remove('hidden');
+
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1200);
+        });
+
+        redirectIfLoggedIn();
+    </script>
+</body>
+</html>
